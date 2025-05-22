@@ -1,24 +1,26 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { InputForm } from "./components/InputForm"
 import { SuggestionCard } from "./components/SuggestionCard"
 import { HistoryList } from "./components/HistoryList"
 import type { FormData, Suggestion } from "./types"
 import { saveToHistory, getHistory, clearHistory } from "./lib/storage"
 import { generateSuggestion } from "./lib/api"
-import { ToastProvider, useToast } from "@radix-ui/react-toast"
+import { ToastProvider, useToast } from "./components/ui/use-toast"
 
 function App() {
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null)
   const [history, setHistory] = useState<Suggestion[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { toast } = useToast ? useToast() : { toast: () => {} }
+  const show = useToast().show
+  const lastFormData = useRef<FormData | null>(null)
 
   useEffect(() => {
     setHistory(getHistory())
   }, [])
 
   const handleSubmit = async (data: FormData) => {
+    lastFormData.current = data
     try {
       setIsLoading(true)
       setError(null)
@@ -50,22 +52,13 @@ ${suggestion.implementationSteps.map((step, index) => `${index + 1}. ${step}`).j
 ${suggestion.estimatedCost}
       `.trim()
       navigator.clipboard.writeText(text)
-      toast && toast({
-        title: "コピーしました",
-        description: "提案内容がクリップボードにコピーされました。",
-        duration: 2000,
-      })
+      show("提案内容がコピーされました！")
     }
   }
 
   const handleRegenerate = async () => {
-    if (!suggestion) return
-    await handleSubmit({
-      industry: suggestion.industry || "",
-      companySize: suggestion.companySize || "",
-      painPoints: suggestion.painPoints || "",
-      budget: suggestion.budget || "",
-    })
+    if (!lastFormData.current) return
+    await handleSubmit(lastFormData.current)
   }
 
   const handleHistorySelect = (selectedSuggestion: Suggestion) => {
