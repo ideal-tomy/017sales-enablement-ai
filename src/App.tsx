@@ -1,30 +1,23 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { InputForm } from "./components/InputForm"
 import { SuggestionCard } from "./components/SuggestionCard"
-
-interface FormData {
-  industry: string
-  companySize: string
-  painPoints: string
-  budget: string
-}
-
-interface Suggestion {
-  title: string
-  description: string
-  expectedOutcome: string
-  implementationSteps: string[]
-  estimatedCost: string
-}
+import { HistoryList } from "./components/HistoryList"
+import type { FormData, Suggestion } from "./types"
+import { saveToHistory, getHistory, clearHistory } from "./lib/storage"
 
 function App() {
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null)
+  const [history, setHistory] = useState<Suggestion[]>([])
+
+  useEffect(() => {
+    setHistory(getHistory())
+  }, [])
 
   const handleSubmit = async (data: FormData) => {
     console.log("Form submitted:", data)
     // TODO: OpenAI APIとの連携
     // 仮のデータを設定
-    setSuggestion({
+    const newSuggestion: Suggestion = {
       title: "AI活用による業務効率化提案",
       description: "AIを活用した業務プロセスの自動化と効率化を実現する提案です。",
       expectedOutcome: "業務効率が30%向上し、人件費の削減と従業員の満足度向上が期待できます。",
@@ -35,7 +28,11 @@ function App() {
         "効果測定と改善",
       ],
       estimatedCost: "初期費用: 100万円、月額運用費: 20万円",
-    })
+      createdAt: new Date().toISOString(),
+    }
+    setSuggestion(newSuggestion)
+    saveToHistory(newSuggestion)
+    setHistory(getHistory())
   }
 
   const handleCopy = () => {
@@ -56,6 +53,15 @@ ${suggestion.estimatedCost}
       `.trim()
       navigator.clipboard.writeText(text)
     }
+  }
+
+  const handleHistorySelect = (selectedSuggestion: Suggestion) => {
+    setSuggestion(selectedSuggestion)
+  }
+
+  const handleHistoryClear = () => {
+    clearHistory()
+    setHistory([])
   }
 
   return (
@@ -79,6 +85,12 @@ ${suggestion.estimatedCost}
             />
           </div>
         )}
+
+        <HistoryList
+          suggestions={history}
+          onSelect={handleHistorySelect}
+          onClear={handleHistoryClear}
+        />
       </div>
     </div>
   )
