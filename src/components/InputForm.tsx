@@ -28,7 +28,7 @@ export function InputForm({ onSubmit, disabled }: InputFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label htmlFor="industry" className="text-sm font-medium">
+        <label htmlFor="industry" className="text-base font-semibold tracking-wide text-primary">
           業種
         </label>
         <input
@@ -45,7 +45,7 @@ export function InputForm({ onSubmit, disabled }: InputFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="companySize" className="text-sm font-medium">
+        <label htmlFor="companySize" className="text-base font-semibold tracking-wide text-primary">
           企業規模
         </label>
         <input
@@ -62,7 +62,7 @@ export function InputForm({ onSubmit, disabled }: InputFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="painPoints" className="text-sm font-medium">
+        <label htmlFor="painPoints" className="text-base font-semibold tracking-wide text-primary">
           課題
         </label>
         <textarea
@@ -79,7 +79,7 @@ export function InputForm({ onSubmit, disabled }: InputFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="budget" className="text-sm font-medium">
+        <label htmlFor="budget" className="text-base font-semibold tracking-wide text-primary">
           予算
         </label>
         <input

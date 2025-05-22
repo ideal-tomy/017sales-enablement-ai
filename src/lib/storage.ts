@@ -1,4 +1,4 @@
-import { Suggestion } from "../types"
+import type { Suggestion } from "../types"
 
 const STORAGE_KEY = "sales-enablement-history"
 

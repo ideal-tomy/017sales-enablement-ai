@@ -61,8 +61,8 @@ ${suggestion.estimatedCost}
   }
 
   return (
-    <div className="container mx-auto max-w-4xl p-4">
-      <div className="space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-full max-w-xl p-8 space-y-8">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">AI営業支援ツール</h1>
           <p className="text-muted-foreground">
