@@ -1,0 +1,29 @@
+import type { FormData } from "../types"
+
+export function generatePrompt(data: FormData): string {
+  return `
+以下の情報に基づいて、営業支援施策の提案を作成してください。
+
+業種: ${data.industry}
+企業規模: ${data.companySize}
+課題: ${data.painPoints}
+予算: ${data.budget}
+
+以下の形式で提案を作成してください：
+
+タイトル: 提案のタイトル
+説明: 提案の概要説明
+期待される効果: 具体的な効果と数値目標
+実装ステップ:
+1. ステップ1
+2. ステップ2
+3. ステップ3
+想定コスト: 初期費用と運用費用の内訳
+
+提案は以下の点に注意して作成してください：
+- 具体的な数値目標を含める
+- 実現可能な施策を提案する
+- 予算内で実現可能な内容にする
+- 業種や企業規模に適した提案にする
+`
+} 

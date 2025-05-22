@@ -4,35 +4,31 @@ import { SuggestionCard } from "./components/SuggestionCard"
 import { HistoryList } from "./components/HistoryList"
 import type { FormData, Suggestion } from "./types"
 import { saveToHistory, getHistory, clearHistory } from "./lib/storage"
+import { generateSuggestion } from "./lib/api"
 
 function App() {
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null)
   const [history, setHistory] = useState<Suggestion[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setHistory(getHistory())
   }, [])
 
   const handleSubmit = async (data: FormData) => {
-    console.log("Form submitted:", data)
-    // TODO: OpenAI APIとの連携
-    // 仮のデータを設定
-    const newSuggestion: Suggestion = {
-      title: "AI活用による業務効率化提案",
-      description: "AIを活用した業務プロセスの自動化と効率化を実現する提案です。",
-      expectedOutcome: "業務効率が30%向上し、人件費の削減と従業員の満足度向上が期待できます。",
-      implementationSteps: [
-        "現状の業務フロー分析",
-        "AIツールの選定と導入",
-        "従業員トレーニングの実施",
-        "効果測定と改善",
-      ],
-      estimatedCost: "初期費用: 100万円、月額運用費: 20万円",
-      createdAt: new Date().toISOString(),
+    try {
+      setIsLoading(true)
+      setError(null)
+      const newSuggestion = await generateSuggestion(data)
+      setSuggestion(newSuggestion)
+      saveToHistory(newSuggestion)
+      setHistory(getHistory())
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "予期せぬエラーが発生しました")
+    } finally {
+      setIsLoading(false)
     }
-    setSuggestion(newSuggestion)
-    saveToHistory(newSuggestion)
-    setHistory(getHistory())
   }
 
   const handleCopy = () => {
@@ -74,9 +70,22 @@ ${suggestion.estimatedCost}
           </p>
         </div>
 
-        <InputForm onSubmit={handleSubmit} />
+        <InputForm onSubmit={handleSubmit} disabled={isLoading} />
 
-        {suggestion && (
+        {error && (
+          <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+            {error}
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="flex items-center justify-center space-x-2">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <p className="text-muted-foreground">提案を生成中...</p>
+          </div>
+        )}
+
+        {suggestion && !isLoading && (
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">生成された提案</h2>
             <SuggestionCard
