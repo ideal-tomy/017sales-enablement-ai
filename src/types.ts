@@ -11,5 +11,6 @@ export interface Suggestion {
   expectedOutcome: string
   implementationSteps: string[]
   estimatedCost: string
+  category: string[]
   createdAt?: string
 } 

@@ -46,6 +46,7 @@ export async function generateSuggestion(data: FormData): Promise<Suggestion> {
     expectedOutcome: "",
     implementationSteps: [],
     estimatedCost: "",
+    category: [],
     createdAt: new Date().toISOString(),
   }
 
@@ -53,6 +54,9 @@ export async function generateSuggestion(data: FormData): Promise<Suggestion> {
   for (const line of lines) {
     if (line.startsWith("タイトル:")) {
       suggestion.title = line.replace("タイトル:", "").trim()
+    } else if (line.startsWith("カテゴリ:")) {
+      // カンマ区切り・全角半角両対応
+      suggestion.category = line.replace("カテゴリ:", "").split(/[、,]/).map((s: string) => s.trim()).filter(Boolean)
     } else if (line.startsWith("説明:")) {
       suggestion.description = line.replace("説明:", "").trim()
     } else if (line.startsWith("期待される効果:")) {

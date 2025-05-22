@@ -6,6 +6,7 @@ interface SuggestionCardProps {
   expectedOutcome: string
   implementationSteps: string[]
   estimatedCost: string
+  category: string[]
   onCopy: () => void
 }
 
@@ -15,10 +16,22 @@ export function SuggestionCard({
   expectedOutcome,
   implementationSteps,
   estimatedCost,
+  category,
   onCopy,
 }: SuggestionCardProps) {
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-sm">
+    <div className="relative rounded-lg border bg-card p-6 shadow-sm">
+      <div className="absolute right-6 top-6 flex gap-2">
+        {category.map((cat, i) => (
+          <span
+            key={i}
+            className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200 shadow-sm"
+            aria-label={`カテゴリ: ${cat}`}
+          >
+            {cat}
+          </span>
+        ))}
+      </div>
       <div className="space-y-4">
         <div className="space-y-2">
           <h3 className="text-xl font-semibold text-card-foreground">{title}</h3>

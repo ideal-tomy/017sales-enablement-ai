@@ -4,7 +4,7 @@ const STORAGE_KEY = "sales-enablement-history"
 
 export function saveToHistory(suggestion: Suggestion) {
   const history = getHistory()
-  const newHistory = [suggestion, ...history].slice(0, 10) // 最新10件を保持
+  const newHistory = [suggestion, ...history].slice(0, 3) // 最新3件を保持
   localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory))
 }
 
